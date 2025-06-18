@@ -191,8 +191,8 @@ namespace elevation_mapping
     visibilityCleanupGroup_ = nodeHandle_->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive);
 
     rclcpp::sleep_for(std::chrono::seconds(1)); // Need this to get the TF caches fill up.
-    mapUpdateTimer_->reset();
-    visibilityCleanupTimer_->reset();
+    // mapUpdateTimer_->reset();
+    // visibilityCleanupTimer_->reset();
     initializeElevationMap();
     return true;
   }
@@ -473,7 +473,7 @@ namespace elevation_mapping
     // Listen to transform between mapFrameId_ and targetFrameInitSubmap_ and use z value for initialization
     try
     {
-      transform_msg = transformBuffer_->lookupTransform(mapFrameId_, targetFrameInitSubmap_, rclcpp::Time(0), rclcpp::Duration::from_seconds(5.0));
+      transform_msg = transformBuffer_->lookupTransform(mapFrameId_, targetFrameInitSubmap_, tf2::TimePointZero);
       tf2::fromMsg(transform_msg, transform);
 
       RCLCPP_DEBUG_STREAM(nodeHandle_->get_logger(), "Initializing with x: " << transform.getOrigin().x() << " y: " << transform.getOrigin().y()
