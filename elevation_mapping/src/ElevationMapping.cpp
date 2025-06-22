@@ -21,7 +21,7 @@
 #include <geometry_msgs/msg/transform_stamped.h>
 #include <geometry_msgs/msg/point_stamped.h>
 #include <tf2/LinearMath/Transform.h>
-#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 
 #include "elevation_mapping/ElevationMap.hpp"
 #include "elevation_mapping/ElevationMapping.hpp"
@@ -253,6 +253,7 @@ namespace elevation_mapping
     // Get robot pose covariance matrix at timestamp of point cloud.
     Eigen::Matrix<double, 6, 6> robotPoseCovariance;
     robotPoseCovariance.setZero();
+
     if (!ignoreRobotMotionUpdates_)
     {
       std::shared_ptr<const nav_msgs::msg::Odometry> odomMessage = robotOdomCache_.getElemBeforeTime(lastPointCloudUpdateTime_);
@@ -273,6 +274,11 @@ namespace elevation_mapping
       const geometry_msgs::msg::PoseWithCovariance poseMessage = odomMessage->pose;
       robotPoseCovariance = Eigen::Map<const Eigen::MatrixXd>(poseMessage.covariance.data(), 6, 6);
     }
+
+    // Process point cloud.
+    PointCloudType::Ptr pointCloudProcessed(new PointCloudType);
+    Eigen::VectorXf measurementVariances;
+    
 
 
     if (!sensorProcessor_->process(pointCloud, robotPoseCovariance, pointCloudProcessed, measurementVariances,
@@ -316,7 +322,6 @@ namespace elevation_mapping
       mapUpdateTimer_->reset();
       return;
     }
-    
     if (publishPointCloud)
     {
       RCLCPP_DEBUG(nodeHandle_->get_logger(), "Publishing pcl.");

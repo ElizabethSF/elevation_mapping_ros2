@@ -1,13 +1,22 @@
 elevation_mapping:
   ros__parameters:
     input_sources:
-      - ground_truth_cloud
+      - left
+      - right
 
-    ground_truth_cloud.type: pointcloud
-    ground_truth_cloud.topic: /Airy_left_point_cloud
-    ground_truth_cloud.queue_size: 1
-    ground_truth_cloud.publish_on_update: true
-    ground_truth_cloud.sensor_processor.type: perfect
+    left.type: pointcloud
+    left.topic: /Airy_left_point_cloud
+    left.queue_size: 1
+    left.publish_on_update: true
+    left.sensor_processor.type: perfect
+        
+    right.type: pointcloud
+    right.topic: /Airy_right_point_cloud
+    right.queue_size: 1
+    right.publish_on_update: true
+    right.sensor_processor.type: perfect
+
+
 
     map_frame_id: "odom"
     robot_odom_topic: ""

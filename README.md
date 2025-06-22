@@ -1,14 +1,46 @@
 # Robot-Centric Elevation Mapping
 
+
 ## runrunxin
+
+### quick start
+
+1. build
+```
+cd ws_elevation_map_ros2
+colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
+```
+Note：need to specify the path of kindr and kindr_ros in elevation_mapping/CMakeLists.txt, for example:
+```
+set(kindr_DIR "/home/snoopy/Autowheelloader/repos/kindr/build/CMakeFiles")
+set(kindr_ros_DIR "/home/snoopy/Autowheelloader/repos/kindr_ros/install/kindr_ros/share/kindr_ros/cmake")
+```
+2. run
+```
+source install/setup.bash
+ros2 launch elevation_mapping_demos my_demo.launch.py
+```
+
 ### 6月22日
 1. change 'elevation_mapping_demos' package from ros1 to ros2 style
 2. fixed bugs and make it work on our autowheelloader data.
 
 Key parameters:
+For mapping:
 1. length_in_x & length_in_x: decide how large the map is
 2. ignorePointsUpperThreshold_: ignore the points above
 3. ignorePointsInsideMinX_: ignore the points around the robot
+
+For map updates:
+| 参数名                                    | 类型     | 默认值      | 含义说明                                                               |
+| -------------------------------------- | ------ | -------- | ------------------------------------------------------------------ |
+| `min_variance`                         | double | `0.0001` | 地图中每个栅格的最小高度方差，防止估计值过于确定，增强数值稳定性。值越小，表示对当前高度的确信程度越高。               |
+| `max_variance`                         | double | `0.01`   | 地图中每个栅格允许的最大高度方差，限制融合传感器数据的不确定性。如果新观测的不确定度高于此值，则不会用于融合。            |
+| `mahalanobis_distance_threshold`       | double | `5.0`    | 用于判断新观测与当前地图高度是否一致的马氏距离阈值。低于该值时视为一致并融合，高于则可能被忽略或替换。值越小，系统越敏感，越易更新。 |
+| `multi_height_noise`             | double | `0.1` | 多高度观测的噪声估计项，用于融合多个高度观测点。值越小代表新点非常可信，地图对其更新非常谨慎；值越大则允许地图更快适应高度变动（如物体被移除）。 |
+
+调整完这些参数之后（都是增大），物体移开，地图会较快进行更新。
+
 
 ![current_result](data/grid_mapping.png)
 
