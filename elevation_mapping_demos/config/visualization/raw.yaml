@@ -1,17 +1,17 @@
-grid_map_visualizations:
+grid_map_visualization:
+  ros__parameters:
 
-  - name: elevation_cloud
-    type: point_cloud
-    params:
-     layer: elevation
+    grid_map_visualizations: ["elevation_cloud", "sigma_cloud", "map_region"]
 
-  - name: sigma_cloud
-    type: point_cloud
-    params:
-     layer: two_sigma_bound
+    grid_map_visualizations.elevation_cloud.name: elevation_cloud
+    grid_map_visualizations.elevation_cloud.type: point_cloud
+    grid_map_visualizations.elevation_cloud.params.layer: elevation
 
-  - name: map_region
-    type: map_region
-    params:
-     color: 16777215
-     line_width: 0.003
+    grid_map_visualizations.sigma_cloud.name: sigma_cloud
+    grid_map_visualizations.sigma_cloud.type: point_cloud
+    grid_map_visualizations.sigma_cloud.params.layer: two_sigma_bound
+
+    grid_map_visualizations.map_region.name: map_region
+    grid_map_visualizations.map_region.type: map_region
+    grid_map_visualizations.map_region.params.color: 16777215
+    grid_map_visualizations.map_region.params.line_width: 0.003

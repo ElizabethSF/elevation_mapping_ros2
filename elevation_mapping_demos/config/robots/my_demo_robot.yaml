@@ -1,0 +1,20 @@
+elevation_mapping:
+  ros__parameters:
+    input_sources:
+      - ground_truth_cloud
+
+    ground_truth_cloud.type: pointcloud
+    ground_truth_cloud.topic: /Airy_left_point_cloud
+    ground_truth_cloud.queue_size: 1
+    ground_truth_cloud.publish_on_update: true
+    ground_truth_cloud.sensor_processor.type: perfect
+
+    map_frame_id: "odom"
+    robot_odom_topic: ""
+    robot_base_frame_id: "base_link"
+    robot_pose_with_covariance_topic: ""
+    robot_pose_cache_size: 200
+    track_point_frame_id: "base_link"
+    track_point_x: 0.0
+    track_point_y: 0.0
+    track_point_z: 0.0

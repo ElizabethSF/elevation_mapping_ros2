@@ -58,17 +58,17 @@ bool SensorProcessorBase::readParameters(std::string& inputSourceName) {
   Parameters parameters;
 
   // TODO: Add parameter validation
-  nodeHandle_->declare_parameter(inputSourceName + ".sensor_processor.ignore_points_above", rclcpp::ParameterValue(std::numeric_limits<double>::infinity()));
+  nodeHandle_->declare_parameter(inputSourceName + ".sensor_processor.ignore_points_above", 8.0);
   nodeHandle_->declare_parameter(inputSourceName + ".sensor_processor.ignore_points_below", rclcpp::ParameterValue(-std::numeric_limits<double>::infinity()));
   nodeHandle_->declare_parameter(inputSourceName + ".sensor_processor.apply_voxelgrid_filter", rclcpp::ParameterValue(false));
   nodeHandle_->declare_parameter(inputSourceName + ".sensor_processor.voxelgrid_filter_size", rclcpp::ParameterValue(0.0));
 
-  nodeHandle_->declare_parameter(inputSourceName + ".sensor_processor.ignore_points_inside_min_x", 0.0);
-  nodeHandle_->declare_parameter(inputSourceName + ".sensor_processor.ignore_points_inside_max_x", 0.0);
-  nodeHandle_->declare_parameter(inputSourceName + ".sensor_processor.ignore_points_inside_min_y", 0.0);
-  nodeHandle_->declare_parameter(inputSourceName + ".sensor_processor.ignore_points_inside_max_y", 0.0);
-  nodeHandle_->declare_parameter(inputSourceName + ".sensor_processor.ignore_points_inside_min_z", 0.0);
-  nodeHandle_->declare_parameter(inputSourceName + ".sensor_processor.ignore_points_inside_max_z", 0.0);
+  nodeHandle_->declare_parameter(inputSourceName + ".sensor_processor.ignore_points_inside_min_x", -8.0);
+  nodeHandle_->declare_parameter(inputSourceName + ".sensor_processor.ignore_points_inside_max_x", 8.0);
+  nodeHandle_->declare_parameter(inputSourceName + ".sensor_processor.ignore_points_inside_min_y", -8.0);
+  nodeHandle_->declare_parameter(inputSourceName + ".sensor_processor.ignore_points_inside_max_y", 8.0);
+  nodeHandle_->declare_parameter(inputSourceName + ".sensor_processor.ignore_points_inside_min_z", -100.0);
+  nodeHandle_->declare_parameter(inputSourceName + ".sensor_processor.ignore_points_inside_max_z", 100.0);
 
   nodeHandle_->get_parameter(inputSourceName + ".sensor_processor.ignore_points_above", parameters.ignorePointsUpperThreshold_);
   nodeHandle_->get_parameter(inputSourceName + ".sensor_processor.ignore_points_below", parameters.ignorePointsLowerThreshold_);
@@ -88,7 +88,7 @@ bool SensorProcessorBase::readParameters(std::string& inputSourceName) {
 }
 
 bool SensorProcessorBase::process(const PointCloudType::ConstPtr pointCloudInput, const Eigen::Matrix<double, 6, 6>& robotPoseCovariance,
-                                  const PointCloudType::Ptr pointCloudMapFrame, Eigen::VectorXf& variances, std::string sensorFrame) {
+                                  const PointCloudType::Ptr pointCloudMapFrame, Eigen::VectorXf& variances, std::string sensorFrame) {  
   sensorFrameId_ = sensorFrame;
   // RCLCPP_DEBUG(rclcpp::get_logger("sensor_processor"), "Sensor Processor processing for frame %s", sensorFrameId_.c_str());
 

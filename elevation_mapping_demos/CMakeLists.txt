@@ -1,79 +1,36 @@
-cmake_minimum_required(VERSION 3.5.1)
+cmake_minimum_required(VERSION 3.8)
 project(elevation_mapping_demos)
 
-## Find catkin macros and libraries
-find_package(catkin REQUIRED COMPONENTS
-  elevation_mapping
-  grid_map_rviz_plugin
+# Find required ROS 2 and dependent packages
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rviz2 REQUIRED)
+find_package(elevation_mapping REQUIRED)
+find_package(grid_map_visualization REQUIRED)
+
+# Install configuration, docs, launch, rviz, and sample data
+install(DIRECTORY
+  config
+  doc
+  launch
   rviz
+  sample_data
+  DESTINATION share/${PROJECT_NAME}
 )
 
-
-###################################
-## catkin specific configuration ##
-###################################
-## The catkin_package macro generates cmake config files for your package
-## Declare things to be passed to dependent projects
-## INCLUDE_DIRS: uncomment this if you package contains header files
-## LIBRARIES: libraries you create in this project that dependent projects also need
-## CATKIN_DEPENDS: catkin_packages dependent projects also need
-## DEPENDS: system dependencies of this project that dependent projects also need
-
-catkin_package(
-  #INCLUDE_DIRS include
-  #LIBRARIES
-  CATKIN_DEPENDS
-    elevation_mapping
-    grid_map_rviz_plugin
-    rviz
-  #DEPENDS
+# Install Python scripts
+install(PROGRAMS
+  scripts/tf_to_pose_publisher.py
+  DESTINATION lib/${PROJECT_NAME}
 )
 
-#############
-## Install ##
-#############
-
-install(DIRECTORY config doc launch rviz sample_data
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-)
-
-install(PROGRAMS scripts/tf_to_pose_publisher.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
-
-##############
-##   Test   ##
-##############
-if(CATKIN_ENABLE_TESTING)
-  find_package(catkin REQUIRED
-    COMPONENTS
-    roslaunch
-    )
-  catkin_add_gtest(test_${PROJECT_NAME}
+# Testing
+if(BUILD_TESTING)
+  find_package(ament_cmake_gtest REQUIRED)
+  ament_add_gtest(test_${PROJECT_NAME}
     test/empty_test.cpp
   )
-
-  target_include_directories(test_${PROJECT_NAME}
-    PRIVATE
-      include
-    SYSTEM PUBLIC
-      ${catkin_INCLUDE_DIRS}
-  )
-
-  target_link_libraries(test_${PROJECT_NAME}
-    ${catkin_LIBRARIES}
-    gtest_main
-  )
-  roslaunch_add_file_check(launch)
-
-  ###################
-  ## Code_coverage ##
-  ###################
-  find_package(cmake_code_coverage QUIET)
-  if(cmake_code_coverage_FOUND)
-    add_gtest_coverage(
-      TEST_BUILD_TARGETS
-        test_${PROJECT_NAME}
-    )
-  endif()
 endif()
+
+# Package export
+ament_package()

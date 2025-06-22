@@ -55,6 +55,11 @@ bool Input::configure(std::string& inputSourceName, const std::string& sourceCon
   
   parameters_.setData(parameters);
  
+  RCLCPP_INFO(nodeHandle_->get_logger(), "inputSourceName: %s", inputSourceName.c_str());
+  RCLCPP_INFO(nodeHandle_->get_logger(), "Sensor Type: %s", sensorProcessorType.c_str());
+  RCLCPP_INFO(nodeHandle_->get_logger(), "parameters.topic_: %s", parameters.topic_.c_str());
+
+
   // SensorProcessor
   if (!configureSensorProcessor(inputSourceName, sensorProcessorType, generalSensorProcessorParameters)) {
     return false;

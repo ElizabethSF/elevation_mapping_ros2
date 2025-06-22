@@ -1,5 +1,18 @@
 # Robot-Centric Elevation Mapping
 
+## runrunxin
+### 6月22日
+1. change 'elevation_mapping_demos' package from ros1 to ros2 style
+2. fixed bugs and make it work on our autowheelloader data.
+
+Key parameters:
+1. length_in_x & length_in_x: decide how large the map is
+2. ignorePointsUpperThreshold_: ignore the points above
+3. ignorePointsInsideMinX_: ignore the points around the robot
+
+![current_result](data/grid_mapping.png)
+
+## elevation_mapping_ros2
 This is a simplified version of the [Robot-Centric Elevation Mapping](https://github.com/ANYbotics/elevation_mapping) package from Anybotics. The main changes are the following:
 
 * Migrated to ROS2 Humble
@@ -16,7 +29,7 @@ Dependencies:
     - nav2_msgs
 - [kindr](https://github.com/ANYbotics/kindr)
 - [kindr_ros](https://github.com/SivertHavso/kindr_ros/tree/ros2) - ros2 branch
-
+- [Eigen]
 To install all dependencies at once, run the provided script:
 ```
 ./install_dependencies.sh

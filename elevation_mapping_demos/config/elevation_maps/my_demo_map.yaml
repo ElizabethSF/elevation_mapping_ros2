@@ -1,0 +1,12 @@
+elevation_mapping:
+  ros__parameters:
+    length_in_x: 100.0
+    length_in_y: 100.0
+    position_x: 0.0
+    position_y: 0.0
+    resolution: 0.3
+    min_variance: 0.000009
+    max_variance: 0.01
+    mahalanobis_distance_threshold: 2.5
+    multi_height_noise: 0.0000009
+    sensor_processor.ignore_points_above: 2.0

@@ -14,6 +14,10 @@ endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+set(kindr_DIR "/home/snoopy/Autowheelloader/repos/kindr/build/CMakeFiles")
+set(kindr_ros_DIR "/home/snoopy/Autowheelloader/repos/kindr_ros/install/kindr_ros/share/kindr_ros/cmake")
+# set(message_logger_DIR "/home/runrunxin/SF/snoopy_stuff/code/packages/catkin_message_logger/devel/share/message_logger/cmake")
+
 find_package(ament_cmake REQUIRED)
 # find_package(eigen_conversions REQUIRED) probably not necessary
 find_package(grid_map_core REQUIRED)

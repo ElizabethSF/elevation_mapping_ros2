@@ -62,11 +62,11 @@ namespace elevation_mapping
     grid_map::Position position;
     double resolution;
 
-    length(0) = nodeHandle_->declare_parameter("length_in_x", 1.5);
-    length(1) = nodeHandle_->declare_parameter("length_in_y", 1.5);
+    length(0) = nodeHandle_->declare_parameter("length_in_x", 100.0);
+    length(1) = nodeHandle_->declare_parameter("length_in_y", 100.0);
     position.x() = nodeHandle_->declare_parameter("position_x", 0.0);
     position.y() = nodeHandle_->declare_parameter("position_y", 0.0);
-    resolution = nodeHandle_->declare_parameter("resolution", 0.01);
+    resolution = nodeHandle_->declare_parameter("resolution", 0.2);
     setGeometry(length, resolution, position);
 
     minVariance_ = nodeHandle_->declare_parameter("min_variance", pow(0.003, 2));
@@ -78,6 +78,8 @@ namespace elevation_mapping
     enableVisibilityCleanup_ = nodeHandle_->declare_parameter("enable_visibility_cleanup", true);
     enableContinuousCleanup_ = nodeHandle_->declare_parameter("enable_continuous_cleanup", false);
     scanningDuration_ = nodeHandle_->declare_parameter("scanning_duration", 1.0);
+
+    std::cout << "read params" << std::endl;
 
     return true;
   }

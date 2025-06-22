@@ -67,12 +67,15 @@ namespace elevation_mapping
 
     initialize();
 
-    RCLCPP_INFO(nodeHandle_->get_logger(), "Successfully launched node.");
+    RCLCPP_INFO(nodeHandle_->get_logger(), "Successfully launched node.------");
   }
 
   void ElevationMapping::setupSubscribers()
   {
     auto res = nodeHandle_->get_topic_names_and_types();
+
+    RCLCPP_INFO(nodeHandle_->get_logger(), "Get topics------");
+
     for (auto a : res)
     {
       RCLCPP_INFO(nodeHandle_->get_logger(), "topic: %s", a.first.c_str());
@@ -88,14 +91,18 @@ namespace elevation_mapping
       RCLCPP_ERROR(nodeHandle_->get_logger(), "Input sources not configured!");
     }
 
+    RCLCPP_INFO(nodeHandle_->get_logger(), "robotOdomTopic_: %s", robotOdomTopic_.c_str());
+
     if (!robotOdomTopic_.empty())
     {
+      RCLCPP_INFO(nodeHandle_->get_logger(), "robotOdomTopic_");
       robotOdomSubscriber_.subscribe(nodeHandle_, robotOdomTopic_);
       robotOdomCache_.connectInput(robotOdomSubscriber_);
       robotOdomCache_.setCacheSize(robotOdomCacheSize_);
     }
     else
     {
+      RCLCPP_INFO(nodeHandle_->get_logger(), "robotOdomTopic_empty");
       ignoreRobotMotionUpdates_ = true;
     }
   }
@@ -138,7 +145,7 @@ namespace elevation_mapping
   {
     // ElevationMapping parameters.
     // FIXME: Fix for case when robot pose is not defined
-    robotOdomTopic_ = nodeHandle_->declare_parameter("robot_odom_topic", std::string("/odom"));
+    robotOdomTopic_ = nodeHandle_->declare_parameter("robot_odom_topic", std::string(""));
     nodeHandle_->declare_parameter("robot_base_frame_id", std::string("base_link"));
     trackPointFrameId_ = nodeHandle_->declare_parameter("track_point_frame_id", std::string("base_link"));
     trackPoint_.x() = nodeHandle_->declare_parameter("track_point_x", 0.0);
@@ -218,7 +225,6 @@ namespace elevation_mapping
     {
       const double oldestPoseTime = robotOdomCache_.getOldestTime().seconds();
       const double currentPointCloudTime = rclcpp::Time(pointCloudMsg->header.stamp).seconds();
-
       if (currentPointCloudTime < oldestPoseTime)
       {
         auto clock = nodeHandle_->get_clock();
@@ -242,7 +248,7 @@ namespace elevation_mapping
     pcl::fromPCLPointCloud2(pcl_pc, *pointCloud);
     lastPointCloudUpdateTime_ = rclcpp::Time(1000 * pointCloud->header.stamp, RCL_ROS_TIME);
 
-    RCLCPP_DEBUG(nodeHandle_->get_logger(), "ElevationMap received a point cloud (%i points) for elevation mapping.", static_cast<int>(pointCloud->size()));
+    RCLCPP_INFO(nodeHandle_->get_logger(), "ElevationMap received a point cloud (%i points) for elevation mapping.", static_cast<int>(pointCloud->size()));
 
     // Get robot pose covariance matrix at timestamp of point cloud.
     Eigen::Matrix<double, 6, 6> robotPoseCovariance;
@@ -268,9 +274,7 @@ namespace elevation_mapping
       robotPoseCovariance = Eigen::Map<const Eigen::MatrixXd>(poseMessage.covariance.data(), 6, 6);
     }
 
-    // Process point cloud.
-    PointCloudType::Ptr pointCloudProcessed(new PointCloudType);
-    Eigen::VectorXf measurementVariances;
+
     if (!sensorProcessor_->process(pointCloud, robotPoseCovariance, pointCloudProcessed, measurementVariances,
                                    pointCloudMsg->header.frame_id))
     {
@@ -297,7 +301,6 @@ namespace elevation_mapping
       mapUpdateTimer_->reset();
       return;
     }
-
     // Clear the map if continuous clean-up was enabled.
     if (map_.enableContinuousCleanup_)
     {
@@ -313,14 +316,13 @@ namespace elevation_mapping
       mapUpdateTimer_->reset();
       return;
     }
-
+    
     if (publishPointCloud)
     {
       RCLCPP_DEBUG(nodeHandle_->get_logger(), "Publishing pcl.");
       // Publish elevation map.
       map_.publishRawElevationMap();
     }
-
     mapUpdateTimer_->reset();
   }
 
